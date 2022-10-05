@@ -18,7 +18,7 @@ https://codepen.io/bla-kos/full/PoeBPNN
 
 # Required html:
 ```
-<div class="slider hor">
+<div class="slider hor"> <!-- To have vertical slide instead of .hor use .ver -->
     <div>
         <div class="field scrollit">
             <div class="space"></div>
