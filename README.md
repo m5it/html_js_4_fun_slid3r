@@ -19,12 +19,12 @@ https://codepen.io/bla-kos/full/PoeBPNN
 # Required html:
 ```
 <div class="slider hor">
-		<div>
-				<div class="field scrollit">
-						<div class="space"></div>
-						<div class="info"></div>
-				</div>
-		</div>
+    <div>
+        <div class="field scrollit">
+            <div class="space"></div>
+            <div class="info"></div>
+        </div>
+    </div>
 </div>
 ```
 
