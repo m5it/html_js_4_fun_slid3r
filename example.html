@@ -2,224 +2,23 @@
     <head>
         <meta name="viewport" content="width=100%, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
         <title>HTML and JS for FuN - Slider Example by t3ch aka B.K. aka grandekos aka etc...</title>
+        <script src="slid3r.js" type="text/javascript"></script>
+        <link href="slid3r_style.css" type="text/css" rel="stylesheet"></link>
 <style>
-.slider {
-    position:absolute;
-    display:inline-block;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-.slider > div {
-    position:relative;
-}
-.slider .field {
-    display:inline-block;
-    scroll-behavior: smooth;
-}
-/* horizontal */
-.slider.hor .field {
-    width:200px;
-    height:31px;
-    background:lightblue;
-    overflow-x:scroll;
-    margin-top: 18px;
-    overflow-y: hidden;
-}
-.slider.hor > div:before, .slider.hor > div:after, .slider.ver > div:before, .slider.ver > div:after {
-    position:absolute;
-    padding:2px;
-    color:black;
-    background:gray;
-    box-shadow:0px 0px 2px 1px lightgray;
-    font-size:0.7em;
-}
-.slider.hor > div:before {
-    left:0px;
-    top:0px;
-    content:"LEFT";
-}
-.slider.hor > div:after {
-    right:0px;
-    top:0px;
-    content:"RIGHT";
-}
-.slider.hor .info {
-    position:absolute;
-    top: 0px;
-    left: 50%;
-    transform: translate(-50%,0px);
-    padding: 2px;
-    color: black;
-    font-size: 0.7em;
-}
-
-/* vertical */
-.slider.ver .field {
-    height:200px;
-    width:31px;
-    background:lightblue;
-    overflow-y:scroll;
-    overflow-x: hidden;
-}
-.slider.ver > div:before {
-    top:0px;
-    left:35px;
-    content:"FORWARD";
-}
-.slider.ver > div:after {
-    bottom:0px;
-    left:35px;
-    content:"BACKWARD";
-}
-.slider.ver .info {
-    position:absolute;
-    top: 50%;
-    left:35px;
-    transform: translate(0px,50%);
-    padding: 2px;
-    color: black;
-    font-size: 0.7em;
-}
-
-.slider.hor .space {
-    width:400%;
-    display:inline-block;
-}
-.slider.ver .space {
-    height:400%;
-    display:inline-block;
+body { margin:20px 0px 0px 0px; padding:0px; }
+.leftSide, .rightSide {
+	float:left;
+	width:50%;
+	height:90vh;
+	box-sizing:border-box;
+	position:relative;
 }
 </style>
-<style>
-.scrollit::-webkit-scrollbar {
-  width: 30px;
-  height:30px;
-}
-.scrollit {
-  scrollbar-width: 20px;
-  scrollbar-color: green orange;
-}
-.scrollit::-webkit-scrollbar-track {
-  background: lightgray;
-}
-.scrollit::-webkit-scrollbar-thumb {
-  background-color: black;
-  border-radius: none;
-  border: none;
-  min-height:60px;
-}
-</style>
-
 <script>
-
-/**
-  * 4.10.22 (pure JS)
-  * ------------------------------------------------------------
-  * Slid3r() thing by t3ch aka B.K. aka grandekos etc...
-  --------------------------------------------------------
-  * first time used to control remote car with mobile and ESP32 wroom
-  --------------------------------------------------------------
-  * Example usage:
-  * (new Slid3r({
-  *      doubleside:true,
-  *      element   :document.querySelector(".slider.hor .field"),
-  *      onscroll  :function(e,pR,result) {
-  *          document.querySelector(".slider.hor .info").innerText = result+" speed.";
-  *      },
-  *  }));
-  * 
-  */
-var Slid3r = function( opt ) {
-    //
-    var opt_elm        = ( typeof(opt)=='object' && typeof(opt['element'])!='undefined'?opt.element:null );        // (Required)
-    var opt_onscroll   = ( typeof(opt)=='object' && typeof(opt['onscroll'])=='function'?opt.onscroll:null );       // (Optional)
-    var opt_vertical   = ( typeof(opt)=='object' && typeof(opt['vertical'])!='undefined'?opt.vertical:false );     // (Optional) default=false=horisontal OR vertical=true
-    var opt_doubleside = ( typeof(opt)=='object' && typeof(opt['doubleside'])!='undefined'?opt.doubleside:false ); // (Optional) doubleside=true then cursor is centered in middle=0, bottom=-255, top=255 or horizontal left,right,center..
-    var opt_maxresult  = ( typeof(opt)=='object' && typeof(opt['maxresult'])!='undefined'?opt.maxresult:255 );     //
-    //
-    if( opt_elm==null ) {
-        console.warn("Error: you didn't define opt.element.",opt);
-        return false;
-    }
-    //
-    var sWH        = null/*scrollWidth|scrollHeight -> depend on opt_vertical*/, 
-        oWH        = null/*offsetWidth|offsetHeight -> depend on opt_vertical*/, 
-        sTL        = null/*scrollLeft|scrollTop     -> depend on opt_vertical*/, 
-        pR         = null/*calculate percentage*/, 
-        valueOfOne = null, 
-        result     = 0,
-        scrollSize = null/*size of scroll space*/,
-        // events when fired scroll is centered. (opt_doubleside=true)
-        events=["mouseup","touchend"];
-    //
-    this.getResult = function() {
-        return result;
-    }
-    //
-    function calcResult() {
-        scrollSize = sWH - oWH;
-        //
-        if( opt_doubleside ) {
-            var tmp = 0;
-            if( sTL<( scrollSize/2 ) ) {
-                tmp =  (scrollSize/2)-sTL;
-            }
-            else {
-                tmp =  sTL-(scrollSize/2);
-            }
-            pR = ((tmp*2)*100)/(sWH-oWH);
-        }
-        else {
-            pR = (sTL*100)/(sWH-oWH);         // current percent depend on scrollWidth
-        }
-        result = Math.ceil(pR*valueOfOne);
-    }
-    
-    //
-    sWH        = (opt_vertical?opt_elm.scrollHeight:opt_elm.scrollWidth);
-    oWH        = (opt_vertical?opt_elm.offsetHeight:opt_elm.offsetWidth);
-    sTL        = (opt_vertical?opt_elm.scrollTop:opt_elm.scrollLeft);
-    valueOfOne = opt_maxresult/100;    // 255 = max analog value, 100 = percent
-    calcResult();
-    
-    // on initialization, Center cursor if double side
-    if( opt_doubleside ) {
-        //
-        if( opt_vertical ) opt_elm.scrollTop  = scrollSize/2;
-        else               opt_elm.scrollLeft = scrollSize/2;
-        // init events to center scroll when button is released
-        for(var i=0; i<events.length;i++) {
-            (function(i) {
-            opt_elm.addEventListener(events[i],function(e) {
-                //
-                if( opt_vertical ) opt_elm.scrollTop  = scrollSize/2;
-                else               opt_elm.scrollLeft = scrollSize/2;
-            });
-            })(i);
-        }
-    }
-    // init onscroll event.
-    opt_elm.onscroll = function(e) {
-        //
-        sWH     = (opt_vertical?opt_elm.scrollHeight:opt_elm.scrollWidth);
-        oWH     = (opt_vertical?opt_elm.offsetHeight:opt_elm.offsetWidth);
-        sTL     = (opt_vertical?opt_elm.scrollTop:opt_elm.scrollLeft);
-        //
-        calcResult();
-        
-        //console.warn("Slid3r() sWH: "+sWH+", oWH: "+oWH+", sTL: "+sTL+", valueOfOne: "+valueOfOne+", pR: "+pR+", result: "+result);
-        // Fire opt_onscroll() if defined.
-        if(opt_onscroll!=null) opt_onscroll(e,pR,result);
-    }
-}
-
-//
-var slider  = null;
 //
 function onLoad(e) {
     // Example initialize slider
-    slider = (new Slid3r({
+    var slider = (new Slid3r({
         doubleside:true,
         element   :document.querySelector(".slider.hor .field"),
         onscroll  :function(e,pR,result) {
@@ -229,25 +28,54 @@ function onLoad(e) {
     //
     document.querySelector(".slider.hor .info").innerText = slider.getResult()+" speed.";
     
+    //
+    var slider1 = (new Slid3r({
+        doubleside:true,
+        vertical:true,
+        element   :document.querySelector(".slider.ver .field"),
+        onscroll  :function(e,pR,result) {
+            document.querySelector(".slider.ver .info").innerText = result+" speed.";
+        },
+    }));
+    //
+    document.querySelector(".slider.ver .info").innerText = slider1.getResult()+" speed.";
 }
 window.onload = function(e) { onLoad(e); }
 </script>
     </head>
     
     <body>
+        <h3 align="center" style="position:fixed:top:0px;">Example sliders for remote control panels in HTML and JS</h3>
         
-        <div class="slider hor">
-            <div>
-                <div class="field scrollit">
-                    <div class="space"></div>
-                    <div class="info"></div>
-                </div>
-            </div>
-        </div>
-        
-        <br><br>
+		<div class="leftSide">
+			<div>
+				<div class="slider ver">
+					<div>
+						<div class="field scrollit">
+							<div class="space"></div>
+							<div class="info"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="rightSide">
+			<div>
+				<div class="slider hor">
+					<div>
+						<div class="field scrollit">
+							<div class="space"></div>
+							<div class="info"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div style="position:fixed;bottom:0px;left:0px;right:0px;text-align:center;">
         <h4># Donate - Welcome - Thanks!</h4>
         <a href="https://www.paypal.com/donate/?hosted_button_id=QGRYL4SL5N4FE"> Donate - Donar - Spenden - Daruj - пожертвовать - दान करना - 捐 - 寄付</a>
-
+        </div>
     </body>
 </html>

@@ -1,0 +1,106 @@
+.slider {
+    position:absolute;
+    display:inline-block;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+.slider > div {
+    position:relative;
+}
+.slider .field {
+    display:inline-block;
+    scroll-behavior: smooth;
+}
+/* horizontal */
+.slider.hor .field {
+    width:200px;
+    height:31px;
+    background:lightblue;
+    overflow-x:scroll;
+    margin-top: 18px;
+    overflow-y: hidden;
+}
+.slider.hor > div:before, .slider.hor > div:after, .slider.ver > div:before, .slider.ver > div:after {
+    position:absolute;
+    padding:2px;
+    color:black;
+    background:gray;
+    box-shadow:0px 0px 2px 1px lightgray;
+    font-size:0.7em;
+}
+.slider.hor > div:before {
+    left:0px;
+    top:0px;
+    content:"LEFT";
+}
+.slider.hor > div:after {
+    right:0px;
+    top:0px;
+    content:"RIGHT";
+}
+.slider.hor .info {
+    position:absolute;
+    top: 0px;
+    left: 50%;
+    transform: translate(-50%,0px);
+    padding: 2px;
+    color: black;
+    font-size: 0.7em;
+}
+
+/* vertical */
+.slider.ver .field {
+    height:200px;
+    width:31px;
+    background:lightblue;
+    overflow-y:scroll;
+    overflow-x: hidden;
+}
+.slider.ver > div:before {
+    top:0px;
+    left:35px;
+    content:"FORWARD";
+}
+.slider.ver > div:after {
+    bottom:0px;
+    left:35px;
+    content:"BACKWARD";
+}
+.slider.ver .info {
+    position:absolute;
+    top: 50%;
+    left:35px;
+    transform: translate(0px,50%);
+    padding: 2px;
+    color: black;
+    font-size: 0.7em;
+}
+
+.slider.hor .space {
+    width:400%;
+    display:inline-block;
+}
+.slider.ver .space {
+    height:400%;
+    display:inline-block;
+}
+
+/**/
+.scrollit::-webkit-scrollbar {
+  width: 30px;
+  height:30px;
+}
+.scrollit {
+  scrollbar-width: 20px;
+  scrollbar-color: green orange;
+}
+.scrollit::-webkit-scrollbar-track {
+  background: lightgray;
+}
+.scrollit::-webkit-scrollbar-thumb {
+  background-color: black;
+  border-radius: none;
+  border: none;
+  min-height:60px;
+}
