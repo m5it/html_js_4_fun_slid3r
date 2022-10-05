@@ -10,8 +10,8 @@ https://codepen.io/bla-kos/full/PoeBPNN
   var slider = (new Slid3r({
         doubleside:true,
         element   :document.querySelector(".slider.hor .field"),
-        onscroll  :function(e,pR,result) {
-            document.querySelector(".slider.hor .info").innerText = result+" speed.";
+        onscroll  :function(H) {
+            document.querySelector(".slider.hor .info").innerText = H.getResult()+" speed.";
         },
     }));
 ```
