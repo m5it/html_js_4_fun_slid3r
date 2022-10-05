@@ -37,8 +37,8 @@ https://codepen.io/bla-kos/full/PoeBPNN
 ```
 
 # Slider options:
-  - element        ( required - define slider element Ex. css: ".slider.hor .field"   or   ".slider.ver .field"
-  - vertical   ( if slide is displayed & used verticaly )
+  - element    ( required - define slider element Ex. css: ".slider.hor .field"   or   ".slider.ver .field"
+  - vertical   ( if slide is used verticaly this should be "true" )
   - doubleside ( if center of slide should be 0 and ends maximum value. (Positive or Negative can be result. Depend on side) )
   - maxresult  ( define maximum value of scroll when scrolled to the end. Default 255 )
   - onscroll   ( function when scroll change is fired )
