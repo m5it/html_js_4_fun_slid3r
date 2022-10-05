@@ -21,9 +21,12 @@ function onLoad(e) {
     var slider = (new Slid3r({
         doubleside:true,
         element   :document.querySelector(".slider.hor .field"),
-        onscroll  :function(e,pR,result) {
-            document.querySelector(".slider.hor .info").innerText = result+" speed.";
+        onscroll  :function(H) {
+            document.querySelector(".slider.hor .info").innerText = H.getResult()+" speed.";
         },
+        onstart:function(H) { console.info("onstart.hor: ",H.getResult()); },
+        onend:function(H) { console.info("onend.hor: ",H.getResult()); },
+        onended:function(H) { console.info("onended.hor: ",H.getResult()); },
     }));
     //
     document.querySelector(".slider.hor .info").innerText = slider.getResult()+" speed.";
@@ -33,9 +36,12 @@ function onLoad(e) {
         doubleside:true,
         vertical:true,
         element   :document.querySelector(".slider.ver .field"),
-        onscroll  :function(e,pR,result) {
-            document.querySelector(".slider.ver .info").innerText = result+" speed.";
+        onscroll  :function(H) {
+            document.querySelector(".slider.ver .info").innerText = H.getResult()+" speed.";
         },
+        onstart:function(H) { console.info("onstart.ver: ",H.getResult()); },
+        onend:function(H) { console.info("onend.ver: ",H.getResult()); },
+        onended:function(H) { console.info("onended.ver: ",H.getResult()); },
     }));
     //
     document.querySelector(".slider.ver .info").innerText = slider1.getResult()+" speed.";
@@ -45,7 +51,7 @@ window.onload = function(e) { onLoad(e); }
     </head>
     
     <body>
-        <h3 align="center" style="position:fixed:top:0px;">Example sliders for remote control panels in HTML and JS</h3>
+        <h3 align="center" style="position:fixed:top:0px;">Example sliders for remote control panels in HTML and JS. <br>Can be found on <a href="https://github.com/m5it/html_js_4_fun_slid3r" target="_BLANK">https://github.com/m5it/html_js_4_fun_slid3r</a></h3>
         
 		<div class="leftSide">
 			<div>
