@@ -43,8 +43,8 @@ https://codepen.io/bla-kos/full/PoeBPNN
   - maxresult  ( define maximum value of scroll when scrolled to the end. Default 255 )
   - onscroll   ( function when scroll change is fired )
   - onstart    ( function when user start scrolling is fired )
-  - onend      ( function when user remove fingers is fired )
-  - onended    ( function when user is removed fingers and scroll gets back to zero is fired )
+  - onend      ( function when user removes finger is fired )
+  - onended    ( function when user removes finger and scroll gets back to zero is fired )
 
 # Donate - Welcome - Thanks!
 <a href="https://www.paypal.com/donate/?hosted_button_id=QGRYL4SL5N4FE"> Donate - Donar - Spenden - Daruj - пожертвовать - दान करना - 捐 - 寄付</a>
