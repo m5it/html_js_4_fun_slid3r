@@ -18,7 +18,15 @@ https://codepen.io/bla-kos/full/PoeBPNN
 
 # Required html:
 ```
-<div class="slider hor"> <!-- To have vertical slide instead of .hor use .ver -->
+<div class="slider hor"> <!-- 
+                              To have vertical slide instead of .hor use .ver 
+                              To change size of slide do it in slid3r_style.css and lines:
+                                 .slider.hor .field { width:200px; } 
+                                 .slider.ver .field { height:200px; }
+                              Maybe with this will need to be adjust lines:
+                                .slider.hor .space { width:400%; }
+                                .slider.ver .space { width:400%; }
+                         -->
     <div>
         <div class="field scrollit">
             <div class="space"></div>
