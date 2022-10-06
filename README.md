@@ -29,6 +29,7 @@ https://codepen.io/bla-kos/full/PoeBPNN
                          -->
     <div>
         <div class="field scrollit">
+            <div class="cover"></div>
             <div class="space"></div>
             <div class="info"></div>
         </div>
