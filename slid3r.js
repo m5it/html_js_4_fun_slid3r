@@ -72,7 +72,7 @@ var Slid3r = function( opt ) {
 		else {
 			pR = (sTL*100)/(sWH-oWH);         // current percent depend on scrollWidth
 		}
-		result = Math.round(Math.ceil(pR*valueOfOne));
+		result = Math.ceil(Math.round(pR)*valueOfOne);
 		// Make value negative so we know what side scroll is dragged
 		if( opt_doubleside && ((!opt_vertical && sTL<( scrollSize/2 )) || (opt_vertical && sTL>( scrollSize/2 ))) ) {
 			result = result * (-1);
