@@ -38,6 +38,7 @@ https://codepen.io/bla-kos/full/PoeBPNN
 
 # Slider options:
   - element    ( required - define slider element Ex. css: ".slider.hor .field"   or   ".slider.ver .field"
+  - mobile     ( if mobile=true then "touch" events are used else "mouse" )
   - vertical   ( if slide is used verticaly this should be "true" )
   - doubleside ( if center of slide should be 0 and ends maximum value. (Positive or Negative can be result. Depend on side) )
   - maxresult  ( define maximum value of scroll when scrolled to the end. Default 255 )
