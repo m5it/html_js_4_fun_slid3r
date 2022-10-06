@@ -1,6 +1,8 @@
 /**
   * 4.10.22 (pure JS)
   * ------------------------------------------------------------
+  * https://github.com/m5it/html_js_4_fun_slid3r
+  * ------------------------------------------------------------
   * Slid3r() thing by t3ch aka B.K. aka grandekos etc...
   --------------------------------------------------------
   * first time used to control remote car with mobile and ESP32 wroom
@@ -25,6 +27,8 @@ var Slid3r = function( opt ) {
 	var opt_vertical   = ( typeof(opt)=='object' && typeof(opt['vertical'])!='undefined'?opt.vertical:false );     // default=false=horisontal OR vertical=true
 	var opt_doubleside = ( typeof(opt)=='object' && typeof(opt['doubleside'])!='undefined'?opt.doubleside:false ); // doubleside=true then cursor is centered in middle=0, bottom=-255, top=255 or horizontal left,right,center..
 	var opt_maxresult  = ( typeof(opt)=='object' && typeof(opt['maxresult'])!='undefined'?opt.maxresult:255 );
+	var opt_mobile     = ( typeof(opt)=='object' && typeof(opt['mobile'])!='undefined'?opt.mobile:false );
+	
 	//
 	if( opt_elm==null ) {
 		console.warn("Error: you didn't define opt.element.",opt);
@@ -40,8 +44,13 @@ var Slid3r = function( opt ) {
 	    result     = 0,
 	    scrollSize = null/*size of scroll space*/,
 	    // events when fired scroll is centered. (opt_doubleside=true)
-	    events=["mouseup","touchend","mousedown","touchstart"],
-	    check_ended=false;
+	    events     = (opt_mobile?["touchend","touchstart","touchmove",]:["mouseup","mousedown","mousemove",]),
+	    check_ended=false,
+	    tmp_elm    = opt_elm.querySelector(".cover");
+	//
+	this.scrollSpeed = (opt_vertical?(opt_elm.scrollHeight/100)-(opt_elm.offsetHeight/100):(opt_elm.scrollWidth/100)-(opt_elm.offsetWidth/100));
+	//
+	console.info("Slid3r() DEBUG scrollSpeed: "+_this.scrollSpeed+", tmp_elm",tmp_elm);
 	//
 	this.getResult = function() {
 		return result;
@@ -71,6 +80,7 @@ var Slid3r = function( opt ) {
 	}
 	//
 	function centerScroll() {
+		console.info("Slid3r()->centerScroll() start.");
 		//
 		if( opt_vertical ) opt_elm.scrollTop  = scrollSize/2;
 		else               opt_elm.scrollLeft = scrollSize/2;
@@ -87,18 +97,93 @@ var Slid3r = function( opt ) {
 		centerScroll();
 	}
 	
+	var touches = null;
+	var touchn  = 0;
+	var X=0,Y=0;
+	var start=false;
 	// init events to center scroll when button is released
 	for(var i=0; i<events.length;i++) {
 		(function(i) {
-			opt_elm.addEventListener(events[i],function(e) {
-				if     (opt_doubleside && (e.type=="mouseup" || e.type=="touchend"))        centerScroll();
-				else if(opt_onstart!=null && (e.type=="mousedown" || e.type=="touchstart")) {
-					opt_onstart(_this);
+			console.info("Slid3r() initializing event: ",events[i]);
+			//
+			tmp_elm.addEventListener(events[i],function(e) {
+				if(opt_onstart!=null && (e.type=="touchstart"||e.type=="mousedown")) {
+					opt_elm.classList.add("active");
 					check_ended = false;
+					//
+					X=0, Y=0;
+					start=true;
+					//
+					if(e.type=="touchstart") {
+					    touches = e.touches || e.changedTouches;
+					    if     (touches.length>0) {
+							touchn = touches.length-1;
+						    //var touch   = e.touches[0] || e.changedTouches[0];
+						    var touch   = e.touches[touchn] || e.changedTouches[touchn];
+			                X = touch.pageX; 
+			                Y = touch.pageY;
+						}
+						console.info("Slid3r() touchstart touches.length: "+touches.length+", touchn: "+touchn+", touch: ",touch);
+					}
+					else {
+						X = e.pageX;
+						Y = e.pageY;
+						console.info("Slid3r() mousedown started. x: "+X+", y: "+Y);
+					}
+					//
+					opt_onstart(_this);
 				}
-				if     (opt_onend!=null && (e.type=="mouseup" || e.type=="touchend"))       {
-					opt_onend(_this);
-					check_ended = true;
+				else if( e.type=="touchend" || e.type=="mouseup" ) {
+					if(!start) return false;
+					//
+					e.preventDefault();
+					opt_elm.classList.remove("active");
+				    //
+				    if(opt_doubleside) {
+						centerScroll();
+					}
+					touch = null;
+					start = false;
+					//
+					if     (opt_onend!=null) {
+						opt_onend(_this);
+						check_ended = true;
+					}
+				}
+				//
+				else if( e.type=="touchmove" || e.type=="mousemove" ) {
+					if(!start) return false;
+					//
+					e.preventDefault();
+		
+					//
+					var x=0,y=0;
+					
+					if( e.type=="touchmove" ) {
+						//
+						var curtouches = e.touches || e.changedTouches;
+						//var touch = e.touches[0] || e.changedTouches[0];
+						var touch = e.touches[touchn] || e.changedTouches[touchn];
+			            x = touch.pageX;
+			            y = touch.pageY;
+					}
+					else {
+						x = e.pageX;
+						y = e.pageY;
+					}
+	                //-- calc moved distance in px from previous move or first mousedown/touch
+	                var nx = x-X;
+	                var ny = y-Y;
+	                //
+	                if( opt_vertical ) {
+						opt_elm.scrollTop = (opt_elm.scrollTop + (ny*_this.scrollSpeed));
+					}
+					else {
+						opt_elm.scrollLeft = (opt_elm.scrollLeft + (nx*_this.scrollSpeed));
+					}
+					//
+					X=x;
+	                Y=y;
 				}
 			});
 		})(i);
