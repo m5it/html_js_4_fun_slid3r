@@ -11,8 +11,8 @@
   * (new Slid3r({
   *      doubleside:true,
   *      element   :document.querySelector(".slider.hor .field"),
-  *      onscroll  :function(e,pR,result) {
-  *          document.querySelector(".slider.hor .info").innerText = result+" speed.";
+  *      onscroll  :function(H) {
+  *          document.querySelector(".slider.hor .info").innerText = H.getResult()+" speed.";
   *      },
   *  }));
   * 
@@ -86,6 +86,21 @@ var Slid3r = function( opt ) {
 		else               opt_elm.scrollLeft = scrollSize/2;
 	}
 	//
+	function onEnd() {
+		opt_elm.classList.remove("active");
+		//
+        if(opt_doubleside) {
+            centerScroll();
+        }
+        touch = null;
+        start = false;
+        //
+        if     (opt_onend!=null) {
+            opt_onend(_this);
+            check_ended = true;
+        }
+	}
+	//
 	sWH        = (opt_vertical?opt_elm.scrollHeight:opt_elm.scrollWidth);
 	oWH        = (opt_vertical?opt_elm.offsetHeight:opt_elm.offsetWidth);
 	sTL        = (opt_vertical?opt_elm.scrollTop:opt_elm.scrollLeft);
@@ -101,13 +116,15 @@ var Slid3r = function( opt ) {
 	var touchn  = 0;
 	var X=0,Y=0;
 	var start=false;
+	
 	// init events to center scroll when button is released
 	for(var i=0; i<events.length;i++) {
 		(function(i) {
 			console.info("Slid3r() initializing event: ",events[i]);
 			//
 			tmp_elm.addEventListener(events[i],function(e) {
-				if(opt_onstart!=null && (e.type=="touchstart"||e.type=="mousedown")) {
+				if(e.type=="touchstart"||e.type=="mousedown") {
+					//
 					opt_elm.classList.add("active");
 					check_ended = false;
 					//
@@ -131,24 +148,13 @@ var Slid3r = function( opt ) {
 						console.info("Slid3r() mousedown started. x: "+X+", y: "+Y);
 					}
 					//
-					opt_onstart(_this);
+					if(opt_onstart!=null) opt_onstart(_this);
 				}
 				else if( e.type=="touchend" || e.type=="mouseup" ) {
 					if(!start) return false;
 					//
 					e.preventDefault();
-					opt_elm.classList.remove("active");
-				    //
-				    if(opt_doubleside) {
-						centerScroll();
-					}
-					touch = null;
-					start = false;
-					//
-					if     (opt_onend!=null) {
-						opt_onend(_this);
-						check_ended = true;
-					}
+					onEnd();
 				}
 				//
 				else if( e.type=="touchmove" || e.type=="mousemove" ) {
@@ -187,6 +193,15 @@ var Slid3r = function( opt ) {
 				}
 			});
 		})(i);
+	}
+	
+	//
+	if(!opt_mobile) {
+		document.addEventListener("mouseup",function(e) {
+			//
+			e.preventDefault();
+			if( start ) onEnd();
+		});
 	}
 	
 	// init onscroll event.
